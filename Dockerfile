@@ -9,6 +9,8 @@ COPY requirements.txt /tmp
 
 RUN pip install -r /tmp/requirements.txt 
 
-COPY src/* /app/
+COPY src/ /app/
 
-CMD tail -f /dev/null
+EXPOSE 9000
+ENTRYPOINT [ "python"]
+CMD ["app.py"]
