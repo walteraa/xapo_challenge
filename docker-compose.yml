@@ -1,0 +1,49 @@
+version: '2'
+volumes:
+  data:
+  broker_data:
+networks:
+  xapo_network:
+services:
+  db:
+    image: 'mysql:5.6'
+    ports:
+      - "3306:3306"
+    volumes:
+      - data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=passwd
+      - MYSQL_DATABASE=xapo_currency_api
+    hostname: db
+    networks:
+      xapo_network:
+        aliases:
+          - &db_host db
+  broker:
+    image: 'rabbitmq:3.5.7-management'
+    volumes:
+      - broker_data:/var/lib/rabbitmq
+    ports:
+      - '15673:15673'
+    hostname: broker
+    networks:
+      xapo_network:
+        aliases:
+          - &broker_host broker
+  currency_api:
+    image: 'currency_api:latest'
+    environment:
+      - DB_HOST=db_host
+      - DB_PASSWORD=passwd
+      - DB_USER=root
+      - DB_DATABASE=xapo_currency_api
+    hostname: app
+    networks:
+      xapo_network:
+        aliases:
+          - &app_host app
+
+      
+
+    
+
